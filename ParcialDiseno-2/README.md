@@ -18,7 +18,7 @@
 8. API de clases  
 9. Ejemplo de uso  
 10. Pruebas sugeridas  
-11. Diagrama UML de Clases (colocar aquí)  
+11. Diagrama UML de Clases
 12. Extensiones futuras  
 13. Licencia
 
