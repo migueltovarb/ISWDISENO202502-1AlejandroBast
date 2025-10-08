@@ -190,4 +190,5 @@ app.registrarMascota(ana, "Fido", "Gato", 1); // lanza IllegalStateException
 - Catálogo de `tipo` de control (a futuro podría migrar de `String` a `enum`).
 - Búsquedas por `documento`, por nombre de mascota y filtros de fechas.
 
+[![By: AlejandroBast](https://img.shields.io/badge/By-AlejandroBast-6b9cff)](https://github.com/AlejandroBast)
 
