@@ -177,17 +177,10 @@ app.registrarMascota(ana, "Fido", "Gato", 1); // lanza IllegalStateException
 
 ---
 
-## Diagrama UML de Clases (colocar aquí)
+## Diagrama UML de Clases
 
-> **🔳 Inserta TU imagen del diagrama aquí**.  
-> Guarda el diagrama como `docs/uml-clases.png` y déjalo referenciado como:
+<img width="856" height="787" alt="image" src="https://github.com/user-attachments/assets/9bf5ad44-de97-4847-87bd-97bb8fa3e67f" />
 
-```markdown
-<!-- DIAGRAMA UML DE CLASES -->
-![Diagrama UML de Clases](docs/uml-clases.png)
-```
-
----
 
 ## Extensiones futuras
 
