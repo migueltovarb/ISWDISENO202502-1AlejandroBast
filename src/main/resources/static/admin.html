@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuitYa! | Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo"><h2>SuitYa!</h2></div>
+        <nav class="nav-links">
+            <a href="/dashboard.html">Dashboard</a>
+            <a href="#" id="logout-btn" style="color: var(--error); border: 1px solid var(--error); padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.2s;">Salir</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+            <div class="card card-content" style="height: fit-content;">
+                <h3>Agregar habitación</h3>
+                <form id="create-room-form" style="margin-top: 1rem;">
+                    <div class="form-group">
+                        <label>Número</label>
+                        <input type="text" name="number" required placeholder="e.g. 101">
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <select name="type">
+                            <option value="Single">Single</option>
+                            <option value="Double">Double</option>
+                            <option value="Suite">Suite</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio ($)</label>
+                        <input type="number" name="price" required placeholder="0.00" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea name="description" required rows="3" placeholder="Detalles..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>URL de imagen</label>
+                        <input type="url" name="imageUrl" placeholder="https://example.com/room.jpg">
+                    </div>
+                    <div id="admin-message" class="alert hidden"></div>
+                    <button type="submit">Crear habitación</button>
+                </form>
+            </div>
+
+            <div>
+                <h3>Habitaciones existentes</h3>
+                <div id="admin-rooms-list" style="display: grid; gap: 1rem;"></div>
+                <div id="admin-empty" class="hidden" style="text-align:center; color: var(--text-secondary);">No hay habitaciones.</div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/app.js"></script>
+    <script>
+        checkAuth();
+        loadAdminRooms();
+
+        document.getElementById('create-room-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            const msg = document.getElementById('admin-message');
+            msg.className = 'alert hidden';
+
+            if (!data.number || !data.type || !data.price || !data.description) {
+                msg.textContent = 'Completa todos los campos.';
+                msg.className = 'alert alert-error';
+                return;
+            }
+            try {
+                const res = await apiFetch('/api/rooms', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    msg.textContent = 'Habitación creada';
+                    msg.className = 'alert alert-success';
+                    e.target.reset();
+                    loadAdminRooms();
+                } else {
+                    msg.textContent = 'Error al crear la habitación';
+                    msg.className = 'alert alert-error';
+                }
+            } catch (err) {
+                msg.textContent = 'Error de red';
+                msg.className = 'alert alert-error';
+            }
+        });
+
+        async function loadAdminRooms() {
+            const res = await apiFetch('/api/rooms');
+            const rooms = Array.isArray(res.data) ? res.data : [];
+            const container = document.getElementById('admin-rooms-list');
+            const empty = document.getElementById('admin-empty');
+            if (!rooms.length) { empty.classList.remove('hidden'); container.innerHTML = ''; return; }
+            empty.classList.add('hidden');
+            container.innerHTML = rooms.map(room => `
+                <div class="card" style="flex-direction: row; padding: 1rem; align-items: center;">
+                    <img src="${room.imageUrl || 'https://via.placeholder.com/100'}" loading="lazy" alt="Habitación ${room.number}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-right: 1rem;">
+                    <div style="flex-grow: 1;">
+                        <h4 style="margin: 0; color: var(--secondary-color);">${room.type} - ${room.number}</h4>
+                        <p style="margin: 0.25rem 0; color: var(--primary-color); font-weight: bold;">$${room.price}</p>
+                    </div>
+                    <button onclick="deleteRoom('${room.id}')" style="width: auto; background-color: #fee2e2; color: #991b1b; padding: 0.5rem 1rem; font-size: 0.875rem; box-shadow: none;">Eliminar</button>
+                </div>
+            `).join('');
+        }
+
+        async function deleteRoom(id) {
+            if (!confirm('¿Eliminar esta habitación?')) return;
+            await apiFetch(`/api/rooms/${id}`, { method: 'DELETE' });
+            loadAdminRooms();
+        }
+    </script>
+</body>
+</html>
