@@ -69,15 +69,5 @@ Aplicación web de reservas de hotel construida con Spring Boot (backend), Mongo
   - `http://localhost:8081/dashboard.html` (dashboard)
   - `http://localhost:8081/admin.html` (admin, requiere `ROLE_ADMIN`)
 
-## Seguridad
-- No expongas credenciales en repositorios públicos.
-- Mantén la protección de rutas en backend; el cliente solo oculta/enseña enlaces.
 
-## Personalización de marca
-- El branding del proyecto se actualizó a “SuitYa!”.
-- Títulos HTML y navbar muestran “SuitYa!”.
-- El icono se incluye al inicio de este README.
-
-## Licencia
-Este proyecto es para fines educativos/demostrativos. Ajusta la licencia según tus necesidades.
 
